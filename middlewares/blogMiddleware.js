@@ -6,11 +6,6 @@ export const validarBlog = async (req, res, next) => {
   const { titulo, contenido, categoria } = req.body;
 
   try {
-    // Validar si el título es un string
-    if (!validator.isString(titulo)) {
-      return res.status(400).json({ mensaje: "El título debe ser un string" });
-    }
-
     // Validar que el título no esté vacío
     if (validator.isEmpty(titulo)) {
       return res
@@ -18,25 +13,11 @@ export const validarBlog = async (req, res, next) => {
         .json({ mensaje: "El título no puede estar vacío" });
     }
 
-    // Validar si el contenido es un string
-    if (!validator.isString(contenido)) {
-      return res
-        .status(400)
-        .json({ mensaje: "El contenido debe ser un string" });
-    }
-
     // Validar que el contenido no esté vacío
     if (validator.isEmpty(contenido)) {
       return res
         .status(400)
         .json({ mensaje: "El contenido no puede estar vacío" });
-    }
-
-    // Validar si la categoría es un string
-    if (!validator.isString(categoria)) {
-      return res
-        .status(400)
-        .json({ mensaje: "La categoría debe ser un string" });
     }
 
     // Validar que la categoría no esté vacía
