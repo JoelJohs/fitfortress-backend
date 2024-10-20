@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     { id: user._id, username: user.username },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1m", //* NO OLVIDAR CAMBIAR A 1H
+      expiresIn: "1h", //* NO OLVIDAR CAMBIAR A 1H
     }
   );
 
@@ -66,8 +66,8 @@ export const logout = async (req, res) => {
 //* Protected route
 export const protectedRoute = async (req, res) => {
   if (req.session.user) {
-    res.json({ message: 'Acceso concedido', user: req.session.user });
+    res.json({ message: "Acceso concedido", user: req.session.user });
   } else {
-    res.status(401).json({ message: 'Acceso denegado' });
+    res.status(401).json({ message: "Acceso denegado" });
   }
 };
