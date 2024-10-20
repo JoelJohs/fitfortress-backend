@@ -43,13 +43,6 @@ export const obtenerBlogPorId = async (req, res) => {
 //* Crear un blog
 export const crearBlog = async (req, res) => {
   try {
-    // Verificar que el rol del usuario ("Personal" o "Admin") sea valido para crear un blog
-    if (req.usuario.rol !== "Personal" && req.usuario.rol !== "Admin") {
-      return res
-        .status(403)
-        .json({ mensaje: "No tienes permiso para crear un blog" });
-    }
-
     const nuevoBlog = new Blog({ ...req.body, autor: req.usuario._id }); // Crear un nuevo blog con el cuerpo de la solicitud y el ID del autor
     const blogGuardado = await nuevoBlog.save();
     res.status(201).json(blogGuardado);
@@ -63,21 +56,6 @@ export const actualizarBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
 
-    // Verificar si el blog existe
-    if (!blog) {
-      return res.status(404).json({ mensaje: "Blog no encontrado" });
-    }
-
-    // Verificar que el usuario sea el autor del blog o un administrador
-    if (
-      req.usuario._id.toString() !== blog.autor.toString() &&
-      req.usuario.rol !== "Admin"
-    ) {
-      return res
-        .status(403)
-        .json({ mensaje: "No tienes permiso para actualizar este blog" });
-    }
-
     const blogActualizado = await Blog.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -86,5 +64,17 @@ export const actualizarBlog = async (req, res) => {
     res.json(blogActualizado);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al actualizar el blog" });
+  }
+};
+
+//* Eliminar un blog (solo para el autor o admin)
+export const eliminarBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+
+    await Blog.findByIdAndDelete(req.params.id);
+    res.json({ mensaje: "Blog eliminado correctamente" });
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error al eliminar el blog" });
   }
 };

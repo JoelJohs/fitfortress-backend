@@ -12,7 +12,7 @@ const blogSchema = new Schema({
     enum: ["free", "basic", "premium"],
     default: "free",
   },
-  categoria: String,
+  categoria: { type: String, required: true },
   etiquetas: [String],
   imagen: String,
   vistas: { type: Number, default: 0 },
