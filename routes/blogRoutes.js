@@ -5,13 +5,13 @@ import {
   crearBlog,
   actualizarBlog,
   eliminarBlog,
-} from "../controllers/blogController";
+} from "../controllers/blogController.js";
 
 import {
   validarBlog,
   verificarRoles,
   validarBlogExistente,
-} from "../middlewares/blogMiddleware";
+} from "../middlewares/blogMiddleware.js";
 
 const router = express.Router();
 

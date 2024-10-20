@@ -1,4 +1,4 @@
-import Blog from "../models/blogModel";
+import Blog from "../models/blogModel.js";
 import validator from "validator";
 
 //* Validar campos del blog antes de crearlo

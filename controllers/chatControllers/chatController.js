@@ -1,4 +1,4 @@
-import Mensaje from "../../models/mensajesModel";
+import Mensaje from "../../models/mensajesModel.js";
 
 const chatController = (io) => {
   io.on("connection", (socket) => {
