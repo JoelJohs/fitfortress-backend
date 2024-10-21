@@ -93,3 +93,38 @@ export const tokenMiddleware = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//* Middleware para verificar roles
+//* Verifica si el usuario tiene el rol necesario para realizar una acción
+export const roleMiddleware = async (req, res, next) => {
+  try {
+    const token = req.cookies.access_token; // Obtiene el token de las cookies
+
+    // Verificar y decodificar el token para obtener el rol del usuario
+    const data = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Token decodificado:", decodedToken); // Agrega esta línea
+
+    // Verificar id y rol del usuario
+    const userId = decodedToken.userId;
+    const userRole = decodedToken.rol;
+
+    // Buscar el usuario en la base de datos
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado." });
+    }
+
+    // Asignar el rol del usuario a la solicitud
+    req.user = {
+      _id: userId,
+      rol: userRole,
+    };
+
+    next();
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(403).json({ mensaje: "Token inválido." });
+    }
+    res.status(500).json({ mensaje: "Error de autenticación." });
+  }
+};
