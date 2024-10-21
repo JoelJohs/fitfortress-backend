@@ -12,14 +12,13 @@ import { Server } from "socket.io";
 import chatController from "./controllers/chatControllers/chatController.js";
 
 import router from "./routes/index.js";
+import connectDB from "./config/db.js";
 
-// CONFIGURACION BASICA DE EXPRESS
+//* CONFIGURACION BASICA DE EXPRESS
 // ************************************
 
-// Definición del puerto
-const PORT = process.env.PORT || 3000;
-
-// Creación de la aplicación
+//* Creación de la aplicación
+// Se crea la aplicación de express y se integran todas las configuraciones necesarias
 const app = express();
 const server = createServer(app); // Servidor HTTP
 const io = new Server(server); // Socket.io - Websockets server
@@ -33,21 +32,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Rutas
 app.use("/", router);
 
-// Carga de variables de entorno
+//* Carga de variables de entorno
 dotenv.config();
-
-// Conexión a la base de datos
+//* Extraccion de variables de entorno
+// Definición del puerto
+const PORT = process.env.PORT || 3000;
+// Mongo Uri
 const mongoUri = process.env.MONGODB_URI;
 
-mongoose.Promise = global.Promise;
-mongoose
-  .connect(mongoUri, {})
-  .then(() => {
-    console.log(colors.green.bold("Connected to MongoDB"));
-  })
-  .catch((error) => {
-    console.log(colors.red.bold("Error connecting to MongoDB: ", error));
-  });
+// Conexión a la base de datos
+connectDB(mongoUri);
 
 // OTRAS CONFIGURACIONES
 // ************************************
