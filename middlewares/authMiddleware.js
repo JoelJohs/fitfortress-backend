@@ -3,8 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 
-const saltRounds = process.env.SALT_ROUNDS || 10;
-
 //* Register middleware
 //* Verifica los datos del usuario antes de registrarlo en la base de datos
 export const registerMiddleware = async (req, res, next) => {
@@ -42,7 +40,7 @@ export const registerMiddleware = async (req, res, next) => {
     }
 
     // Hashea la contraseña antes de guardarla en la base de datos y la guarda en req.body para que el controlador pueda acceder a ella
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
     req.body.password = hashedPassword;
 
     next();
@@ -98,14 +96,20 @@ export const tokenMiddleware = async (req, res, next) => {
 //* Verifica si el usuario tiene el rol necesario para realizar una acción
 export const roleMiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.access_token; // Obtiene el token de las cookies
+    const token = req.cookies.access_token; // Obtener el token de las cookies
 
-    // Verificar y decodificar el token para obtener el rol del usuario
-    const data = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Token decodificado:", decodedToken); // Agrega esta línea
+    if (!token) {
+      return res
+        .status(403)
+        .json({ mensaje: "No tienes permiso para realizar esta acción" });
+    }
+
+    // Verificar y decodificar el token para obtener el id y rol del usuario
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     // Verificar id y rol del usuario
-    const userId = decodedToken.userId;
+    const userId = decodedToken.id;
+    const username = decodedToken.username;
     const userRole = decodedToken.rol;
 
     // Buscar el usuario en la base de datos
@@ -117,6 +121,7 @@ export const roleMiddleware = async (req, res, next) => {
     // Asignar el rol del usuario a la solicitud
     req.user = {
       _id: userId,
+      username: username,
       rol: userRole,
     };
 

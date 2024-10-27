@@ -5,7 +5,10 @@ const Schema = mongoose.Schema;
 const blogSchema = new Schema({
   titulo: { type: String, required: true },
   contenido: { type: String, required: true },
-  autor: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  autor: {
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    username: { type: String, required: true },
+  },
   fechaCreacion: { type: Date, default: Date.now },
   tipoAcceso: {
     type: String,

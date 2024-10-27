@@ -43,11 +43,18 @@ export const obtenerBlogPorId = async (req, res) => {
 //* Crear un blog
 export const crearBlog = async (req, res) => {
   try {
-    const nuevoBlog = new Blog({ ...req.body, autor: req.usuario._id }); // Crear un nuevo blog con el cuerpo de la solicitud y el ID del autor
+    const nuevoBlog = new Blog({
+      ...req.body,
+      autor: { _id: req.user._id, username: req.user.username },
+    }); // Crear un nuevo blog con el cuerpo de la solicitud y el ID del autor
+
     const blogGuardado = await nuevoBlog.save();
+
     res.status(201).json(blogGuardado);
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al crear el blog" });
+    res
+      .status(500)
+      .json({ mensaje: "Error al crear el blog", error: error.message });
   }
 };
 

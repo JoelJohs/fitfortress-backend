@@ -6,7 +6,6 @@ import path from "path";
 const connectDB = (mongoUri) => {
   // filepaths de cute_cat.jpeg
   const pathToCuteCat = path.join(process.cwd(), "config", "cute_cat.jpeg");
-  console.log("pathToCuteCat: ", pathToCuteCat);
 
   if (!fs.existsSync(pathToCuteCat)) {
     console.log(

@@ -39,10 +39,10 @@ export const login = async (req, res) => {
 
   // Generar el token de autenticación con JWT
   const token = jwt.sign(
-    { id: user._id, username: user.username },
+    { id: user._id, username: user.username, rol: user.rol },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1h", //* NO OLVIDAR CAMBIAR A 1H
+      expiresIn: "1h",
     }
   );
 
@@ -50,8 +50,6 @@ export const login = async (req, res) => {
   res
     .cookie("access_token", token, {
       httpOnly: true, // Cookie solo accesible por el servidor
-      secure: process.env.NODE_ENV === "production", // Solo se envía en producción (https)
-      sameSite: "strict", // Cookie no accesible por terceros, solo por el mismo dominio
       maxAge: 60 * 60 * 1000, // Tiempo de vida de la cookie en milisegundos (1 hora)
     }) // Agregar la cookie al header de la respuesta
     .status(200)
