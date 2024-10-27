@@ -60,7 +60,7 @@ export const validarBlogExistente = async (req, res, next) => {
 
     // Verificar que el usuario sea el autor del blog o un administrador
     if (
-      req.user._id.toString() !== blog.autor.toString() &&
+      req.user._id.toString() !== blog.autor._id.toString() &&
       req.user.rol !== "admin"
     ) {
       return res
@@ -71,6 +71,8 @@ export const validarBlogExistente = async (req, res, next) => {
     req.blog = blog;
     next();
   } catch (error) {
-    res.status(500).json({ mensaje: error.message });
+    res
+      .status(500)
+      .json({ mensaje: "Error al validar el blog", error: error.message });
   }
 };

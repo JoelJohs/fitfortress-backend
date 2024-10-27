@@ -63,14 +63,23 @@ export const actualizarBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
 
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ mensaje: "Blog no encontrado", error: error.message });
+    }
+
     const blogActualizado = await Blog.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true, runValidators: true }
     );
+
     res.json(blogActualizado);
   } catch (error) {
-    res.status(500).json({ mensaje: "Error al actualizar el blog" });
+    res
+      .status(500)
+      .json({ mensaje: "Error al actualizar el blog", error: error.message });
   }
 };
 
