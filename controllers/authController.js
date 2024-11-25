@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     { id: user._id, username: user.username, rol: user.rol },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1h",
+      expiresIn: "7d",
     }
   );
 
@@ -50,7 +50,7 @@ export const login = async (req, res) => {
   res
     .cookie("access_token", token, {
       httpOnly: true, // Cookie solo accesible por el servidor
-      maxAge: 60 * 60 * 1000, // Tiempo de vida de la cookie en milisegundos (1 hora)
+      maxAge: 7 * 24 * 60 * 60 * 1000, // Tiempo de vida de la cookie en milisegundos (7 días)
     }) // Agregar la cookie al header de la respuesta
     .status(200)
     .json({ token });

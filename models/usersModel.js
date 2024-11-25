@@ -22,7 +22,11 @@ const userSchema = new Schema({
   genero: { type: String, enum: ["masculino", "femenino", "otro"] },
 
   // Imagen de perfil
-  fotoPerfil: { type: String, default: "uploads/generic.png" },
+  fotoPerfil: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/dy3oxphrg/image/upload/v1732076298/blogs/generic_picture.png",
+  },
 
   fechaRegistro: { type: Date, default: Date.now },
 });

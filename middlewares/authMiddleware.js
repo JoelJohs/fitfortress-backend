@@ -40,7 +40,7 @@ export const registerMiddleware = async (req, res, next) => {
     }
 
     // Hashea la contraseña antes de guardarla en la base de datos y la guarda en req.body para que el controlador pueda acceder a ella
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10); 
     req.body.password = hashedPassword;
 
     next();

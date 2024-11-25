@@ -6,6 +6,17 @@ export const validarBlog = async (req, res, next) => {
   const { titulo, contenido, categoria } = req.body;
 
   try {
+    // Verificar que los campos no sean undefined
+    if (
+      titulo === undefined ||
+      contenido === undefined ||
+      categoria === undefined
+    ) {
+      return res
+        .status(400)
+        .json({ mensaje: "Faltan datos en el cuerpo de la solicitud" });
+    }
+
     // Validar que el título no esté vacío
     if (validator.isEmpty(titulo)) {
       return res
@@ -29,6 +40,8 @@ export const validarBlog = async (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log("Error aqui: ", req.body);
+
     res.status(500).json({ mensaje: error.message });
   }
 };

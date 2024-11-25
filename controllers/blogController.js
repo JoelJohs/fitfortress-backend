@@ -1,4 +1,6 @@
 import Blog from "../models/blogModel.js";
+import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 //* Obtener todos los blogs con paginación
 export const obtenerBlogs = async (req, res) => {
@@ -43,18 +45,68 @@ export const obtenerBlogPorId = async (req, res) => {
 //* Crear un blog
 export const crearBlog = async (req, res) => {
   try {
+    const { titulo, contenido, categoria } = req.body;
+    const { file } = req;
+
+    // Verificar que req.body y req.file no sean undefined
+    if (!titulo || !contenido || !categoria) {
+      return res
+        .status(400)
+        .json({ mensaje: "Faltan datos en el cuerpo de la solicitud" });
+    }
+
+    if (!file) {
+      return res
+        .status(400)
+        .json({ mensaje: "No se ha subido ningún archivo" });
+    }
+
+    const { path } = file; // Ruta del archivo subido
+
+    // Subir la imagen a Cloudinary
+    const result = await cloudinary.uploader.upload(path, {
+      public_id: `blog/${titulo.replace(/\s+/g, "_")}_${Date.now()}`,
+      folder: "blogs",
+      resource_type: "image",
+    });
+
+    // Eliminar el archivo local después de subirlo a Cloudinary
+    fs.unlinkSync(path);
+
     const nuevoBlog = new Blog({
-      ...req.body,
+      titulo,
+      contenido,
+      categoria,
       autor: { _id: req.user._id, username: req.user.username },
-    }); // Crear un nuevo blog con el cuerpo de la solicitud y el ID del autor
+      imagen: result.secure_url, // Guardar la URL de la imagen
+    });
 
     const blogGuardado = await nuevoBlog.save();
 
     res.status(201).json(blogGuardado);
   } catch (error) {
+    console.error(error); // Log del error para depuración
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
+
+//* Obtener blogs por nombre de usuario
+export const obtenerBlogsPorUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const blogs = await Blog.find({ "autor.username": username });
+
+    if (!blogs.length) {
+      return res
+        .status(404)
+        .json({ mensaje: "No se encontraron blogs para este usuario" });
+    }
+
+    res.json({ blogs });
+  } catch (error) {
     res
       .status(500)
-      .json({ mensaje: "Error al crear el blog", error: error.message });
+      .json({ mensaje: "Error al obtener los blogs por nombre de usuario" });
   }
 };
 

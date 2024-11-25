@@ -17,10 +17,12 @@ const blogSchema = new Schema({
   },
   categoria: { type: String, required: true },
   etiquetas: [String],
-  imagen: String,
+  imagen: String, // Campo para la URL de la imagen
   vistas: { type: Number, default: 0 },
   likes: { type: Number, default: 0 },
 });
+
+blogSchema.index({ "autor.username": 1 });
 
 const Blog = mongoose.model("Blog", blogSchema);
 export default Blog;
