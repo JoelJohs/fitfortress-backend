@@ -26,8 +26,6 @@ const app = express();
 const server = createServer(app); // Servidor HTTP
 const io = new Server(server); // Socket.io - Websockets server
 
-// Configuraciones de express
-import cors from "cors";
 
 const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",");
 
