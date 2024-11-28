@@ -27,6 +27,8 @@ const server = createServer(app); // Servidor HTTP
 const io = new Server(server); // Socket.io - Websockets server
 
 // Configuraciones de express
+import cors from "cors";
+
 const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",");
 
 app.use(
@@ -38,9 +40,16 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos permitidos
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-requested-with", // Necesario para algunas configuraciones de Axios
+    ],
+    credentials: true, // Permite el uso de cookies o encabezados de autenticación
   })
 );
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
