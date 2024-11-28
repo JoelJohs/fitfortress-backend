@@ -27,7 +27,7 @@ const server = createServer(app); // Servidor HTTP
 const io = new Server(server); // Socket.io - Websockets server
 
 // Configuraciones de express
-const allowedOrigins = [process.env.CORS_ORIGIN || "http://localhost:5173"];
+const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",");
 
 app.use(
   cors({
@@ -38,7 +38,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // Permite el uso de cookies o credenciales en solicitudes
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -54,8 +54,6 @@ app.use("/", router);
 const PORT = process.env.PORT || 3000;
 // Mongo Uri
 const mongoUri = process.env.MONGODB_URI;
-
-
 
 // Conexión a la base de datos
 connectDB(mongoUri);
